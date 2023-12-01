@@ -18,6 +18,9 @@ from openprompt.pipeline_base import PromptForClassification
 from openprompt import PromptDataLoader
 from openprompt.prompts import *
 from openprompt.utils.logging import logger
+from sklearn.metrics import precision_score, recall_score, f1_score
+
+
 
 class DecTRunner(object):
     r"""A runner for DecT
@@ -53,18 +56,24 @@ class DecTRunner(object):
         logits = self.model(batch)
         pred = torch.argmax(logits, dim=-1)
         return pred.cpu().tolist(), label.cpu().tolist()
-    
-    def inference_epoch(self, split: str): 
-        outputs = []
-        scores = {}
+
+    def inference_epoch(self, split: str):
         self.model.eval()
         with torch.no_grad():
-            data_loader = self.valid_dataloader if split=='validation' else self.test_dataloader
+            data_loader = self.valid_dataloader if split == 'validation' else self.test_dataloader
             model_preds, preds, labels = self.verbalizer.test(self.model, data_loader)
-            # zs_score = accuracy_score(labels, model_preds)
-            score = accuracy_score(labels, preds)
-            scores = {"dect acc": score}
-        return scores
+            accuracy = accuracy_score(labels, preds)
+            precision = precision_score(labels, preds, average='macro')
+            recall = recall_score(labels, preds, average='macro')
+            f1 = f1_score(labels, preds, average='macro')
+
+            print(f"Accuracy: {accuracy}")
+            print(f"Precision: {precision}")
+            print(f"Recall: {recall}")
+            print(f"F1 Score: {f1}")
+
+            scores = {"dect acc": accuracy, "precision": precision, "recall": recall, "f1": f1}
+            return scores
 
     def inference_epoch_end(self, outputs):
         preds = []

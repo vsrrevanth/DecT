@@ -63,6 +63,11 @@ The repository allows for various configurations to reproduce the original study
 
 Each parameter can be adjusted according to the requirements of the experiment.
 
+## Compute Resources
+This project was primarily developed and tested on an NVIDIA 3060 Ti GPU. The expected runtime for training and evaluation will vary depending on the specific model and dataset size. For instance, training the 'roberta-base' model on the SST2 dataset for 1-shot learning typically takes about 2 hours per epoch, while 'roberta-large' may take up to 4 hours per epoch due to its larger size.
+
+Please ensure your system meets these requirements for optimal performance. For larger-scale experiments, or when using models with a greater number of parameters, access to more powerful hardware or cloud computing resources may be necessary.
+
 
 ## Reproducing the Study
 
